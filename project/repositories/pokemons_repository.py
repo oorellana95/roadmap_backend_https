@@ -23,17 +23,13 @@ def insert_pokemon(pokemon: Pokemon) -> bool:
 
 def upgrade_pokemon(pokemon_to_upgrade: Pokemon) -> Pokemon:
     """Given a pokemon, upgrades it to the database."""
-    is_new_pokemon = True
     pokemons = get_pokemons()
-    for idx, pokemon in enumerate(pokemons):
-        if pokemon.id == pokemon_to_upgrade.id:
-            pokemons[idx] = pokemon_to_upgrade
-            is_new_pokemon = False
-            break
-    if is_new_pokemon:
-        insert_pokemon(pokemon_to_upgrade)
-    else:
+    idx_pokemon = [idx for idx, pokemon in enumerate(pokemons) if pokemon.id == pokemon_to_upgrade.id]
+    if len(idx_pokemon) == 1:
+        pokemons[idx_pokemon[0]] = pokemon_to_upgrade
         rewrite_json_file(settings.LOCATION_POKEDEX, deserializer_pokemons_to_dict(pokemons))
+    else:
+        insert_pokemon(pokemon_to_upgrade)
     return pokemon_to_upgrade
 
 
