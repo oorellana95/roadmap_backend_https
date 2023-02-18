@@ -4,7 +4,7 @@ from typing import List
 
 from starlette.datastructures import QueryParams
 
-from project.utils.query_params_func import query_param_to_list_str, query_param_to_list_int
+from project.utils.query_params_functions import query_param_to_list_str, query_param_to_list_int
 
 
 class PokemonFilterQueryParams(str, Enum):
