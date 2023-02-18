@@ -7,14 +7,16 @@ from fastapi.responses import JSONResponse
 from project.config import get_settings
 from project.exceptions.exception_handler import register_exceptions_handler
 from project.exceptions.response_exception import NotFoundException
+from project.exceptions.validation_exception import InputValidationException
 from project.repositories import pokemons_repository
-from project.repositories.pokemons_repository import insert_pokemon
+from project.repositories.pokemons_repository import insert_pokemon, upgrade_pokemon
 from project.schemas.pokedex import Pokedex
 from project.schemas.pokemon import Pokemon
 from project.schemas.pokemon_filter import PokemonFilter
 from project.schemas.pokemon_in import PokemonIn
 from project.serializers.pokemon_serializer import deserializer_pokemons_to_dict
 from project.utils.File.file_json import read_json_file, rewrite_json_file
+from project.utils.uuid_funtions import is_valid_uuid
 
 # Import settings
 settings = get_settings()
@@ -103,17 +105,15 @@ def post_pokemon(pokemon_in: PokemonIn):
 
 @app.put("/pokemons")
 def put_pokemon(input_pokemon: Pokemon):
-    """The PUT method replaces all current representations of the target resource with the request payload."""
-    pokemons = read_json_file(settings.LOCATION_POKEDEX)
-    for idx, pokemon in enumerate(pokemons):
-        if pokemon.get('id') == input_pokemon.id:
-            pokemons[idx] = input_pokemon.to_dict()
-            rewrite_json_file(settings.LOCATION_POKEDEX, pokemons)
-            return JSONResponse(
-                status_code=200,
-                content=input_pokemon
-            )
-    raise NotFoundException(f"Pokemon with id {input_pokemon.id} not found.")
+    """The PUT method replaces or creates the target resource with the request payload."""
+    if is_valid_uuid(input_pokemon.id):
+        upgrade_pokemon(input_pokemon)
+        return JSONResponse(
+            status_code=201,
+            content=deserializer_pokemons_to_dict(input_pokemon)
+        )
+
+    raise InputValidationException(f"Pokemon invalid. Verify the id.")
 
 
 @app.patch("/pokemons/{pokemon_id}", status_code=200)
