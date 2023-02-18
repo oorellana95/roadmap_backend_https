@@ -10,6 +10,7 @@ class Pokemon(BaseModel):
     pokedex_number: int
     name: str
     types: List[str]
+    life_percent: float
 
     @classmethod
     def from_pokemon_in(cls, pokemon_in: PokemonIn):
@@ -18,7 +19,8 @@ class Pokemon(BaseModel):
         pokedex_number = pokemon_in.pokedex_number
         name = pokemon_in.name
         types = pokemon_in.types
-        return cls(id=id, pokedex_number=pokedex_number, name=name, types=types)
+        life_percent = pokemon_in.life_percent
+        return cls(id=id, pokedex_number=pokedex_number, name=name, types=types, life_percent=life_percent)
 
     def __eq__(self, other):
         return self.id == other.id

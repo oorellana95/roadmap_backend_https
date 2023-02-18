@@ -1,6 +1,6 @@
 from typing import Union
 
-from fastapi import FastAPI, Header, Request
+from fastapi import FastAPI, Header, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -9,13 +9,14 @@ from project.exceptions.exception_handler import register_exceptions_handler
 from project.exceptions.response_exception import NotFoundException
 from project.exceptions.validation_exception import InputValidationException
 from project.repositories import pokemons_repository
-from project.repositories.pokemons_repository import insert_pokemon, upgrade_pokemon, remove_pokemon
+from project.repositories.pokemons_repository import insert_pokemon, upgrade_pokemon, remove_pokemon, \
+    update_pokemon_fields
 from project.schemas.pokedex import Pokedex
 from project.schemas.pokemon import Pokemon
 from project.schemas.pokemon_filter import PokemonFilter
 from project.schemas.pokemon_in import PokemonIn
 from project.serializers.pokemon_serializer import deserializer_pokemons_to_dict
-from project.utils.uuid_funtions import is_valid_uuid
+from project.utils.uuid_functions import is_valid_uuid
 
 # Import settings
 settings = get_settings()
@@ -66,7 +67,7 @@ def is_allowed_http_crud_method(method: str):
 
 
 @app.get("/pokemons")
-def read_pokemons(request: Request):
+def get_pokemons(request: Request):
     """Retrieves the pokemons from the pokedex."""
     pokemon_filter = PokemonFilter.from_query_params(request.query_params)
     pokedex = Pokedex(pokemons=pokemons_repository.get_pokemons(), pokemon_filter=pokemon_filter)
@@ -78,8 +79,8 @@ def read_pokemons(request: Request):
 
 
 @app.get("/pokemons/{pokemon_id}")
-def read_pokemon_by_pokemon_id(pokemon_id: str):
-    """Retrieves an specific pokemon with the corresponding pokemon_id."""
+def get_pokemon_by_pokemon_id(pokemon_id: str):
+    """Retrieves a specific pokemon with the corresponding pokemon_id."""
     pokedex = Pokedex(pokemons=pokemons_repository.get_pokemons())
     pokemon = pokedex.get_pokemon_by_id(pokemon_id)
     if pokemon:
@@ -105,19 +106,26 @@ def post_pokemon(pokemon_in: PokemonIn):
 def put_pokemon(input_pokemon: Pokemon):
     """Replaces or creates the pokemon with the request payload."""
     if is_valid_uuid(input_pokemon.id):
-        upgrade_pokemon(input_pokemon)
+        upgraded_pokemon = upgrade_pokemon(input_pokemon)
         return JSONResponse(
             status_code=201,
-            content=deserializer_pokemons_to_dict(input_pokemon)
+            content=deserializer_pokemons_to_dict(upgraded_pokemon)
         )
 
     raise InputValidationException(f"Pokemon invalid. Verify the id.")
 
 
 @app.patch("/pokemons/{pokemon_id}", status_code=200)
-def patch_pokemon(pokemon_id: int):
-    """The PATCH method applies partial modifications to a resource."""
-    return {"pokemon_id": pokemon_id}
+def patch_pokemon_life_percent(pokemon_id: str, life_percent: float = Body(..., embed=True)):
+    """Updates the pokemons life_percent field."""
+    kwargs = {"life_percent": life_percent}
+    pokemon_updated = update_pokemon_fields(pokemon_id, **kwargs)
+    if pokemon_updated:
+        return JSONResponse(
+            status_code=200,
+            content=deserializer_pokemons_to_dict(pokemon_updated)
+        )
+    raise NotFoundException(f"Pokemon with id {pokemon_id} not found.")
 
 
 @app.delete("/pokemons/{pokemon_id}", status_code=200)

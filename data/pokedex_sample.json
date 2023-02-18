@@ -1,78 +1,96 @@
 [
     {
         "id": "f83b9c14-e003-4362-b6bf-962995df9b02",
-        "pokedex_number": "1",
+        "pokedex_number": 1,
         "name": "Bulbasaur",
         "types": [
             "poison",
             "plant"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "a89f1280-44e0-4081-ac23-406d3417ebcf",
-        "pokedex_number": "2",
+        "pokedex_number": 2,
         "name": "Ivysaur",
         "types": [
             "poison",
             "plant"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "d39ae109-c0e4-44df-8cf5-fca81aa7413c",
-        "pokedex_number": "3",
+        "pokedex_number": 3,
         "name": "Venusaur",
         "types": [
             "poison",
             "plant"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "8b7c1fdf-bed5-4ff7-8a8d-5c74b10d4639",
-        "pokedex_number": "4",
+        "pokedex_number": 4,
         "name": "Charmander",
         "types": [
             "fire"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "ea60f0a2-1323-4ecf-b4bf-1403ddc90fd9",
-        "pokedex_number": "5",
+        "pokedex_number": 5,
         "name": "Charmeleon",
         "types": [
             "fire"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "0e3e7c7e-816e-44ba-bf41-06a50b27534c",
-        "pokedex_number": "6",
+        "pokedex_number": 6,
         "name": "Charizard",
         "types": [
             "fire",
             "flyer"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "b2b64ab8-003d-4398-859f-1bb075116e10",
-        "pokedex_number": "7",
+        "pokedex_number": 7,
         "name": "Squirtle",
         "types": [
             "water"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "6b600c1f-a02e-4ce3-9595-e7f52de7fe8b",
-        "pokedex_number": "8",
+        "pokedex_number": 8,
         "name": "Wartortle",
         "types": [
             "water"
-        ]
+        ],
+        "life_percent": 100.00
     },
     {
         "id": "e34f7869-d4be-4f42-87b9-37d142d33c90",
-        "pokedex_number": "9",
+        "pokedex_number": 9,
         "name": "Blastoise",
         "types": [
             "water"
-        ]
+        ],
+        "life_percent": 100.00
+    },
+    {
+        "id": "8093c4c8-08af-4ee8-8741-5ab5e76f7b3d",
+        "pokedex_number": 10,
+        "name": "Caterpie",
+        "types": [
+            "bug"
+        ],
+        "life_percent": 100.00
     }
 ]
