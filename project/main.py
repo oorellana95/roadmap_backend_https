@@ -80,7 +80,7 @@ def read_pokemons(request: Request):
 def read_pokemon_by_pokemon_id(pokemon_id: str):
     """Retrieves the specific pokemon with the corresponding pokemon_id."""
     pokedex = Pokedex(pokemons=pokemons_repository.get_pokemons())
-    pokemon = pokedex.get_pokemon_by_pokemon_id(pokemon_id)
+    pokemon = pokedex.get_pokemon_by_id(pokemon_id)
     if pokemon:
         return JSONResponse(
             status_code=200,

@@ -13,14 +13,9 @@ class Pokedex:
         self.pokemon_filter = pokemon_filter
 
     def get_pokemon_by_id(self, id: str) -> Optional[Pokemon]:
+        """Get registered pokemon in the pokedex by its id."""
         for pokemon in self.pokemons:
             if pokemon.id == id:
-                return pokemon
-        return None
-
-    def get_pokemon_by_pokemon_id(self, pokemon_id: str) -> Optional[Pokemon]:
-        for pokemon in self.pokemons:
-            if pokemon.id == pokemon_id:
                 return pokemon
         return None
 
