@@ -15,14 +15,13 @@ def get_pokemons() -> List[Pokemon]:
 
 
 def insert_pokemon(pokemon: Pokemon) -> bool:
-    """Insert a pokemon to the database."""
-    dict_pokemon = deserializer_pokemons_to_dict(pokemon)
-    add_to_json_file(settings.LOCATION_POKEDEX, dict_pokemon)
+    """Given a pokemon, it is inserted to the database."""
+    add_to_json_file(settings.LOCATION_POKEDEX, deserializer_pokemons_to_dict(pokemon))
     return True
 
 
 def upgrade_pokemon(pokemon_to_upgrade: Pokemon) -> bool:
-    """Insert a pokemon to the database."""
+    """Given a pokemon, upgrades it to the database."""
     is_new_pokemon = True
     pokemons = get_pokemons()
     for idx, pokemon in enumerate(pokemons):
@@ -33,6 +32,16 @@ def upgrade_pokemon(pokemon_to_upgrade: Pokemon) -> bool:
     if is_new_pokemon:
         insert_pokemon(pokemon_to_upgrade)
     else:
-        dict_pokemons = deserializer_pokemons_to_dict(pokemons)
-        rewrite_json_file(settings.LOCATION_POKEDEX, dict_pokemons)
+        rewrite_json_file(settings.LOCATION_POKEDEX, deserializer_pokemons_to_dict(pokemons))
     return True
+
+
+def remove_pokemon(pokemon_id: str) -> bool:
+    """Given a pokemon_id, deletes it from the database."""
+    pokemons = get_pokemons()
+    for pokemon in pokemons:
+        if pokemon.id == pokemon_id:
+            pokemons.remove(pokemon)
+            rewrite_json_file(settings.LOCATION_POKEDEX, deserializer_pokemons_to_dict(pokemons))
+            return True
+    return False

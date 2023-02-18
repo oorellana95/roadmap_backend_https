@@ -76,24 +76,6 @@
         ]
     },
     {
-        "id": "2cacd26d-4393-4e9f-b96f-f7732330a650",
-        "pokedex_number": 1,
-        "name": "Bulbasaur",
-        "types": [
-            "poison",
-            "plant"
-        ]
-    },
-    {
-        "id": "6ad6fc67-5ec0-404c-81be-42efccfb25fa",
-        "pokedex_number": 10,
-        "name": "Random",
-        "types": [
-            "poison",
-            "plant"
-        ]
-    },
-    {
         "id": "8093c4c8-08af-4ee8-8741-5ab5e76f7b3d",
         "pokedex_number": 10,
         "name": "Caterpie",

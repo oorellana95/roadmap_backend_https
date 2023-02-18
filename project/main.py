@@ -9,13 +9,12 @@ from project.exceptions.exception_handler import register_exceptions_handler
 from project.exceptions.response_exception import NotFoundException
 from project.exceptions.validation_exception import InputValidationException
 from project.repositories import pokemons_repository
-from project.repositories.pokemons_repository import insert_pokemon, upgrade_pokemon
+from project.repositories.pokemons_repository import insert_pokemon, upgrade_pokemon, remove_pokemon
 from project.schemas.pokedex import Pokedex
 from project.schemas.pokemon import Pokemon
 from project.schemas.pokemon_filter import PokemonFilter
 from project.schemas.pokemon_in import PokemonIn
 from project.serializers.pokemon_serializer import deserializer_pokemons_to_dict
-from project.utils.File.file_json import read_json_file, rewrite_json_file
 from project.utils.uuid_funtions import is_valid_uuid
 
 # Import settings
@@ -68,7 +67,7 @@ def is_allowed_http_crud_method(method: str):
 
 @app.get("/pokemons")
 def read_pokemons(request: Request):
-    """Retrieves the pokemons in the pokedex."""
+    """Retrieves the pokemons from the pokedex."""
     pokemon_filter = PokemonFilter.from_query_params(request.query_params)
     pokedex = Pokedex(pokemons=pokemons_repository.get_pokemons(), pokemon_filter=pokemon_filter)
     pokemons = pokedex.pokemons if pokemon_filter is None else pokedex.get_pokemons_using_filter()
@@ -80,7 +79,7 @@ def read_pokemons(request: Request):
 
 @app.get("/pokemons/{pokemon_id}")
 def read_pokemon_by_pokemon_id(pokemon_id: str):
-    """Retrieves the specific pokemon with the corresponding pokemon_id."""
+    """Retrieves an specific pokemon with the corresponding pokemon_id."""
     pokedex = Pokedex(pokemons=pokemons_repository.get_pokemons())
     pokemon = pokedex.get_pokemon_by_id(pokemon_id)
     if pokemon:
@@ -93,8 +92,7 @@ def read_pokemon_by_pokemon_id(pokemon_id: str):
 
 @app.post("/pokemons", status_code=201)
 def post_pokemon(pokemon_in: PokemonIn):
-    """The POST method submits a new entity to the specified resource, often causing a change in state or side effects
-    on the server."""
+    """Submits a new pokemon to the specified resource."""
     pokemon = Pokemon.from_pokemon_in(pokemon_in)
     insert_pokemon(pokemon)
     return JSONResponse(
@@ -105,7 +103,7 @@ def post_pokemon(pokemon_in: PokemonIn):
 
 @app.put("/pokemons")
 def put_pokemon(input_pokemon: Pokemon):
-    """The PUT method replaces or creates the target resource with the request payload."""
+    """Replaces or creates the pokemon with the request payload."""
     if is_valid_uuid(input_pokemon.id):
         upgrade_pokemon(input_pokemon)
         return JSONResponse(
@@ -124,17 +122,16 @@ def patch_pokemon(pokemon_id: int):
 
 @app.delete("/pokemons/{pokemon_id}", status_code=200)
 def delete_pokemon(pokemon_id: str):
-    """The PUT method replaces all current representations of the target resource with the request payload."""
-    pokemons = read_json_file(settings.LOCATION_POKEDEX)
-    for pokemon in pokemons:
-        if pokemon.get('id') == pokemon_id:
-            pokemons.remove(pokemon)
-            rewrite_json_file(settings.LOCATION_POKEDEX, pokemons)
+    """The DELETES method removes the target resource."""
+    if is_valid_uuid(pokemon_id):
+        is_deleted = remove_pokemon(pokemon_id)
+        if is_deleted:
             return JSONResponse(
                 status_code=200,
                 content=f"Pokemon with id {pokemon_id} has been removed"
             )
-    raise NotFoundException(f"Pokemon with id {pokemon_id} not found.")
+        raise NotFoundException(f"Pokemon with id {pokemon_id} not found.")
+    raise InputValidationException(f"The id should be an UUID valid.")
 
 
 @app.trace("/")
