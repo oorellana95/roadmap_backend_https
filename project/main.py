@@ -14,7 +14,7 @@ from project.schemas.pokemon import Pokemon
 from project.schemas.pokemon_filter import PokemonFilter
 from project.schemas.pokemon_in import PokemonIn
 from project.serializers.pokemon_serializer import deserializer_pokemons_to_dict
-from project.utils.File.file_json import read_json_file, rewrite_json_file, add_to_json_file
+from project.utils.File.file_json import read_json_file, rewrite_json_file
 
 # Import settings
 settings = get_settings()
