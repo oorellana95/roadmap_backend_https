@@ -1,6 +1,6 @@
 from typing import Union
 
-from fastapi import FastAPI, Header, Request, Body
+from fastapi import FastAPI, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -37,25 +37,31 @@ app.add_middleware(
 register_exceptions_handler(app)
 
 
-@app.head("/")
+@app.head("/health")
 async def health():
     pass
 
 
 @app.options("/pokemons", status_code=200)
-def options_pokemons(access_control_request_method: Union[str, None] = Header(default=None)):
+def options_pokemons(method: Union[str, None] = None):
     """The OPTIONS method describes the communication options for the target resource."""
     headers = {
         "Content-Language": "en-US",
-        "Content-Type": "application/json",
-        "Allowed-Path-Parameters": "[{'methods':['GET'], 'parameters': ['pokedex_number']}, "
-                                   "{'methods':['PATCH', 'DELETE'], 'parameters': ['pokemon_id']}]"
+        "Content-Type": "application/json"
     }
-    if access_control_request_method is None:
+    if method is None:
         headers["Allow"] = "GET, POST, PUT, PATCH, DELETE"
-
-    if is_allowed_http_crud_method(access_control_request_method):
-        headers["Allow"] = access_control_request_method
+        headers[
+            "Allowed-Path-Parameters"] = "[{'methods':['GET'], 'parameters': ['pokedex_number']}, {'methods':[" \
+                                         "'PATCH', 'DELETE'], 'parameters': ['pokemon_id']}]"
+    else:
+        method = method.upper()
+        if is_allowed_http_crud_method(method):
+            headers["Allow"] = method
+            if method == "GET":
+                headers["Allowed-Path-Parameters"] = "['pokedex_number']"
+            elif method == "PATCH" or method == "DELETE":
+                headers["Allowed-Path-Parameters"] = "['pokemon_id']"
 
     return JSONResponse(content=None, headers=headers)
 
