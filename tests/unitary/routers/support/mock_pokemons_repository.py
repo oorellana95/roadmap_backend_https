@@ -3,6 +3,10 @@ from project.schemas.pokemon import Pokemon
 from project.utils.general_functions import set_object_attributes_from_kwargs
 
 
+async def override_pokemons_repository():
+    return MockPokemonsRepository()
+
+
 class MockPokemonsRepository(PokemonsRepository):
     def get_pokemons(self):
         return [
