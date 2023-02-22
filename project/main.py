@@ -153,8 +153,3 @@ def delete_pokemon(pokemon_id: str,
         raise NotFoundException(f"Pokemon with id {pokemon_id} not found.")
     raise InputValidationException(f"The id should be an UUID valid.")
 
-
-@app.trace("/")
-def trace_root():
-    """The TRACE method performs a message loop-back test along the path to the target resource."""
-    return {"Hello": "World"}
