@@ -1,5 +1,5 @@
 from abc import (ABC, abstractmethod)
-from typing import List
+from typing import List, Optional
 
 from project.schemas.pokemon import Pokemon
 
@@ -18,7 +18,7 @@ class PokemonsRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def update_pokemon_fields(self, pokemon_id: str, **kwargs) -> Pokemon:
+    def update_pokemon_fields(self, pokemon_id: str, **kwargs) -> Optional[Pokemon]:
         raise NotImplementedError()
 
     @abstractmethod

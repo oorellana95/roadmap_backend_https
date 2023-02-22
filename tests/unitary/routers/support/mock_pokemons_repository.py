@@ -1,3 +1,5 @@
+from typing import Optional
+
 from project.repositories.pokemons_repository import PokemonsRepository
 from project.schemas.pokemon import Pokemon
 from project.utils.general_functions import set_object_attributes_from_kwargs
@@ -26,7 +28,10 @@ class MockPokemonsRepository(PokemonsRepository):
     def upgrade_pokemon(self, pokemon_to_upgrade: Pokemon) -> Pokemon:
         return pokemon_to_upgrade
 
-    def update_pokemon_fields(self, pokemon_id: str, **kwargs) -> Pokemon:
+    def update_pokemon_fields(self, pokemon_id: str, **kwargs) -> Optional[Pokemon]:
+        if pokemon_id == "fake":
+            return None
+
         pokemon_to_update = Pokemon(id=pokemon_id, pokedex_number=1, name='PokemonTest',
                                     types=['type_test1', 'type_test2'], life_percent=100.0)
         set_object_attributes_from_kwargs(object_to_update=pokemon_to_update, kwargs=kwargs)
